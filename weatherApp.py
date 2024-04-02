@@ -1,19 +1,25 @@
-class Weather:
-    def __init__(self, city, temperature, description):
-        self.city = city
-        self.temperature = temperature
-        self.description = description
+import requests
 
-class WeatherApp:
-    def display_weather(self, weather):
-        print(f"City: {weather.city}")
-        print(f"Temperature: {weather.temperature}°C")
-        print(f"Description: {weather.description}")
+def get_weather_forecast(city_name, api_key):
+    url = f"http://api.openweathermap.org/data/2.5/weather?q={city_name}&appid={api_key}&units=metric"
+    response = requests.get(url)
+    data = response.json()
+    return data
 
-weather_app = WeatherApp()
+def main():
+    city_name = input("Enter city name: ")
+    api_key = "b7f049816662b873bcbd79ab42ec215f"  # Replace "YOUR_API_KEY" with your actual OpenWeatherMap API key
+    weather_data = get_weather_forecast(city_name, api_key)
+    
+    # Check if 'name' key exists in weather data
+    if 'name' in weather_data:
+        # Display weather forecast
+        print("Weather Forecast:")
+        print(f"City: {weather_data['name']}")
+        print(f"Temperature: {weather_data['main']['temp']}°C")
+        print(f"Description: {weather_data['weather'][0]['description']}")
+    else:
+        print("City not found. Please enter a valid city name.")
 
-current_weather = Weather("New York", 25.5, "Sunny")
-weather_app.display_weather(current_weather)
-
-another_weather = Weather("London", 18.2, "Cloudy")
-weather_app.display_weather(another_weather)
+if __name__ == "__main__":
+    main()
